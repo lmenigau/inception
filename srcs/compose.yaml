@@ -1,0 +1,53 @@
+services:
+    mariadb:
+        build: requirements/mariadb
+        networks:
+            - incep
+        init: true
+        command:
+          - mysqld_safe
+
+    nginx:
+        build: requirements/nginx
+        volumes_from:
+          - wordpress
+        command:
+            - nginx
+            - -g
+            - daemon off;
+        networks:
+            - incep
+        ports:
+            - 4443:443
+        expose: 
+          - 443
+        init: true
+        secrets:
+            - server.crt
+            - server.key
+
+    wordpress:
+        build: requirements/wordpress
+        networks:
+            - incep
+        command:
+            - php-fpm81
+            - -F
+        init: true
+
+networks:
+    incep:
+
+volumes:
+    wordpress:
+    database:
+
+secrets:
+    server.crt:
+        file: server.crt
+    server.key:
+        file: server.key
+
+configs:
+    nginx:
+        external: true
