@@ -5,5 +5,6 @@ RUN wget -O /bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/pha
 		&& chmod +x /bin/wp
 RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/php8/php-fpm.d/www.conf
 ADD ./wp-config.php /wordpress/ 
+RUN wp core install --url=lomeniga.42.fr --admin_user=louis --admin_email=loou@x.com --title=Blog
 VOLUME /wordpress/
 
