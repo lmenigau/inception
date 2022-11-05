@@ -1,45 +1,53 @@
+name: inception
 services:
     mariadb:
         build: requirements/mariadb
         networks:
-            - incep
-        init: true
+            - net
         command:
           - mysqld_safe
-
     nginx:
+        depends_on: 
+            - wordpress
+        volumes:
+            - wordpress:/wordpress
+        hostname: lomeniga.42.fr
         build: requirements/nginx
-        volumes_from:
-          - wordpress
         command:
             - nginx
             - -g
             - daemon off;
         networks:
-            - incep
+            - net
         ports:
             - 4443:443
         expose: 
           - 443
-        init: true
         secrets:
             - server.crt
             - server.key
-
     wordpress:
         build: requirements/wordpress
+        volumes:
+          - type: volume
+            source: wordpress
+            target: /wordpress
+            bind:
+              create_host_path: true
         networks:
-            - incep
+            - net
         command:
-            - php-fpm81
+            - php-fpm8
             - -F
-        init: true
 
 networks:
-    incep:
+    net:
 
 volumes:
     wordpress:
+      #driver_opts:
+          #       type: bind
+          #       device: /tmp/wordp
     database:
 
 secrets:
