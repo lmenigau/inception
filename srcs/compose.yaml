@@ -45,9 +45,9 @@ networks:
 
 volumes:
     wordpress:
-      #driver_opts:
-          #       type: bind
-          #       device: /tmp/wordp
+      driver_opts:
+        type: bind
+        device: /tmp/wordp
     database:
 
 secrets:
