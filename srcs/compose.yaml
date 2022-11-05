@@ -32,8 +32,6 @@ services:
           - type: volume
             source: wordpress
             target: /wordpress
-            bind:
-              create_host_path: true
         networks:
             - net
         command:
@@ -46,7 +44,8 @@ networks:
 volumes:
     wordpress:
       driver_opts:
-        type: bind
+        type: none
+        o: bind
         device: /tmp/wordp
     database:
 
