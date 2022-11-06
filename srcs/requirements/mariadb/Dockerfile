@@ -6,7 +6,8 @@ RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
 RUN <<DEOF mysqld --user=mysql --datadir=/var/lib/mysql --bootstrap
 FLUSH PRIVILEGES;
 CREATE DATABASE wpdb;
-CREATE USER wp IDENTIFIED BY "pwd";
+CREATE USER wp IDENTIFIED BY "$DB_PASSWD";
 GRANT ALL PRIVILEGES ON wpdb.* TO wp;
 SHUTDOWN;
 DEOF
+VOLUME /var/lib/mysql

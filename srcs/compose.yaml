@@ -6,6 +6,8 @@ services:
             - net
         command:
           - mysqld_safe
+        volumes:
+          - db:/var/lib/mysql
     nginx:
         depends_on: 
             - wordpress
@@ -28,16 +30,18 @@ services:
             - server.crt
             - server.key
     wordpress:
+        environment:
+          WP_PWD:
         depends_on:
           - mariadb
-        build: requirements/wordpress
+        build:
+          context: requirements/wordpress
+          args:
+            DB_PASSWD: $DB_PASSWD
         volumes:
-          - wordpress:/wordpress
+            - wordpress:/wordpress
         networks:
             - net
-        command:
-            - php-fpm8
-            - -F
 
 networks:
     net:
@@ -48,7 +52,11 @@ volumes:
         type: none
         o: bind
         device: /tmp/wordp
-    database:
+    db:
+      driver_opts:
+        type: none
+        o: bind
+        device: /tmp/db
 
 secrets:
     server.crt:
