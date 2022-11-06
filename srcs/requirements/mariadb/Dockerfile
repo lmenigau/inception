@@ -3,6 +3,7 @@ FROM alpine:3.16
 RUN apk add mysql
 RUN rm /etc/my.cnf.d/mariadb-server.cnf
 RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
+ARG DB_PASSWD
 RUN <<DEOF mysqld --user=mysql --datadir=/var/lib/mysql --bootstrap
 FLUSH PRIVILEGES;
 CREATE DATABASE wpdb;

@@ -1,7 +1,10 @@
 name: inception
 services:
     mariadb:
-        build: requirements/mariadb
+        build:
+          context: requirements/mariadb
+          args:
+            DB_PASSWD: $DB_PASSWD
         networks:
             - net
         command:
@@ -37,7 +40,7 @@ services:
         build:
           context: requirements/wordpress
           args:
-            DB_PASSWD: $DB_PASSWD
+            DB_PASSWD: ${DB_PASSWD}
         volumes:
             - wordpress:/wordpress
         networks:
