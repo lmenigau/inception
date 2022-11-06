@@ -9,6 +9,7 @@ services:
     nginx:
         depends_on: 
             - wordpress
+            - mariadb 
         volumes:
             - wordpress:/wordpress
         hostname: lomeniga.42.fr
@@ -27,11 +28,11 @@ services:
             - server.crt
             - server.key
     wordpress:
+        depends_on:
+          - mariadb
         build: requirements/wordpress
         volumes:
-          - type: volume
-            source: wordpress
-            target: /wordpress
+          - wordpress:/wordpress
         networks:
             - net
         command:
