@@ -1,27 +1,28 @@
 # syntax=docker/dockerfile:1
 FROM alpine:3.16
-RUN apk add --no-cache php8-mbstring php8-phar php8-fpm php8-mysqli
-#RUN wget https://wordpress.org/latest.tar.gz
+RUN apk add --no-cache wait4ports php8-gd php8-mbstring php8-phar php8-fpm php8-mysqli
 RUN wget -O /bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar\
 		&& chmod +x /bin/wp
 RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/php8/php-fpm.d/www.conf
-RUN mkdir wordpress && wp core --path=/wordpress download
-#RUN tar x -o -f latest.tar.gz
+RUN mkdir wordpress && chown nobody:nobody wordpress 
+USER nobody:nobody
+RUN wp core --path=/wordpress download
 ARG DB_PASSWD
 RUN wp --path=/wordpress config create --skip-check --dbhost=mariadb --dbname=wpdb --dbuser=wp --dbpass="${DB_PASSWD}"
 
 COPY --chmod=755 <<EOF entry.sh
 #!/bin/sh
 cd /wordpress
-sleep 1
+wait4ports tcp://mariadb:mysql 
 if ! wp core is-installed
 then
 	wp core install --url=lomeniga.42.fr --admin_user=louis --admin_password="\$WP_PWD"\\
 		--admin_email=elon@x.com --skip-email --title=Blog
 	wp user create bob bob@example.com 
 fi
-exec php-fpm8 -F
+exec "\$@"
 EOF
-VOLUME /wordpress
 ENTRYPOINT ["./entry.sh"]
+USER root
+VOLUME /wordpress
 

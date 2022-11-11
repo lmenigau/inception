@@ -10,7 +10,7 @@ services:
         command:
           - mysqld_safe
         volumes:
-          - db:/var/lib/mysql
+          - db:/var/lib/mysql/wpdb
     nginx:
         depends_on: 
             - wordpress
@@ -26,7 +26,7 @@ services:
         networks:
             - net
         ports:
-            - 4443:443
+            - 443:443
         expose: 
           - 443
         secrets:
@@ -41,8 +41,12 @@ services:
           context: requirements/wordpress
           args:
             DB_PASSWD: ${DB_PASSWD}
+            WP_PWD: ${WP_PWD}
         volumes:
             - wordpress:/wordpress
+        command:
+          - php-fpm8
+          - -F
         networks:
             - net
 
@@ -51,15 +55,17 @@ networks:
 
 volumes:
     wordpress:
+      external: false
       driver_opts:
         type: none
         o: bind
-        device: /tmp/wordp
+        device: /home/lomeniga/data/wordp
     db:
+      external: false
       driver_opts:
         type: none
         o: bind
-        device: /tmp/db
+        device: /home/lomeniga/data/db
 
 secrets:
     server.crt:

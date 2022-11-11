@@ -2,18 +2,25 @@ export COMPOSE_PROJECT_NAME=inception
 export COMPOSE_FILE=srcs/compose.yaml
 PWGEN = $(shell mktemp -u XXXXXXXXXXXXXXXXXXXXXX)
 .PHONY: up re
+DB=/home/lomeniga/data/db
+WORDP=/home/lomeniga/data/wordp
 
-up: srcs/.env
-	docker compose up --build
+up: srcs/.env | $(DB) $(WORDP)
+	docker compose up
 
-srcs/.env:
+$(DB):
+	mkdir -p $(DB)
+
+$(WORDP):
+	mkdir -p $(WORDP)
+
+srcs/.env: 
+	mkdir $(DB) $(WORDP)
 	(echo DB_PASSWD=$(PWGEN); echo WP_PWD=$(PWGEN)) > srcs/.env
 
-clean:
-	docker compose down -t 0 --remove-orphans --rmi all
-	docker compose run --rm mariadb sh -c "rm -rf /var/lib/mysql/*"
-	docker compose run --rm --entrypoint 'sh -c "rm -rf /wordpress/*"' wordpress
-	docker volume rm -f inception_db inception_db
+clean:  
+	docker compose down -t1
+	rm -rf /home/lomeniga/data/*
 
 re: clean
-	docker compose up -d --build --force-recreate
+	docker compose up 
