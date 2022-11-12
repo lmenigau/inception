@@ -5,8 +5,11 @@ PWGEN = $(shell mktemp -u XXXXXXXXXXXXXXXXXXXXXX)
 DB=/home/lomeniga/data/db
 WORDP=/home/lomeniga/data/wordp
 
-up: srcs/.env | $(DB) $(WORDP)
+up: srcs/.env srcs/cert.pem | $(DB) $(WORDP)
 	docker compose up
+
+srcs/cert.pem:
+	openssl req -x509 -newkey rsa:4096 -keyout srcs/key.pem -out srcs/cert.pem -sha256 -days 365 -nodes -subj  '/CN=lomeniga.42.fr'
 
 $(DB):
 	mkdir -p $(DB)
