@@ -4,8 +4,8 @@ RUN apk add --no-cache wait4ports php8-gd php8-mbstring php8-phar php8-fpm php8-
 RUN wget -O /bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar\
 		&& chmod +x /bin/wp
 RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/php8/php-fpm.d/www.conf
-RUN mkdir wordpress && chown nobody:nobody wordpress 
-USER nobody:nobody
+RUN adduser wp && mkdir wordpress && chown wp:wp wordpress 
+USER wp
 RUN wp core --path=/wordpress download
 ARG DB_PASSWD
 RUN wp --path=/wordpress config create --skip-check --dbhost=mariadb --dbname=wpdb --dbuser=wp --dbpass="${DB_PASSWD}"

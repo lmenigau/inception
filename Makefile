@@ -18,7 +18,6 @@ $(WORDP):
 	mkdir -p $(WORDP)
 
 srcs/.env: 
-	mkdir $(DB) $(WORDP)
 	(echo DB_PASSWD=$(PWGEN); echo WP_PWD=$(PWGEN)) > srcs/.env
 
 clean:  
