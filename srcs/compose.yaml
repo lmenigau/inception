@@ -11,7 +11,7 @@ services:
     command:
       - mysqld
     volumes:
-      - db:/var/lib/mysql/wpdb
+      - db:/var/lib/mysql
 
   nginx:
     depends_on:

@@ -12,4 +12,4 @@ CREATE DATABASE wpdb;
 CREATE USER wp IDENTIFIED BY "$DB_PASSWD";
 GRANT ALL PRIVILEGES ON wpdb.* TO wp;
 DEOF
-VOLUME /var/lib/mysql/wpdb
+VOLUME /var/lib/mysql
