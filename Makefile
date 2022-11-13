@@ -6,7 +6,9 @@ DB=/home/lomeniga/data/db
 WORDP=/home/lomeniga/data/wordp
 
 up: srcs/.env srcs/cert.pem | $(DB) $(WORDP)
-	docker compose up
+	docker compose up -d
+down:
+	docker compose down -t1
 
 srcs/key.pem:
 	openssl genrsa -out srcs/key.pem 2048
@@ -20,12 +22,11 @@ $(DB):
 $(WORDP):
 	mkdir -p $(WORDP)
 
-srcs/.env: 
+srcs/.env:
 	(echo DB_PASSWD=$(PWGEN); echo WP_PWD=$(PWGEN)) > srcs/.env
 
-clean:  
-	docker compose down -t1
+wipe: down
 	rm -rf /home/lomeniga/data/*
 
 re: clean
-	docker compose up 
+	docker compose up

@@ -7,14 +7,15 @@ services:
             DB_PASSWD: $DB_PASSWD
         networks:
             - net
+        user: mariadb
         command:
-          - mysqld_safe
+          - mysqld
         volumes:
           - db:/var/lib/mysql/wpdb
     nginx:
-        depends_on: 
+        depends_on:
             - wordpress
-            - mariadb 
+            - mariadb
         volumes:
             - wordpress:/wordpress
         hostname: lomeniga.42.fr
@@ -27,7 +28,7 @@ services:
             - net
         ports:
             - 443:443
-        expose: 
+        expose:
           - 443
         secrets:
             - server.crt
