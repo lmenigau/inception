@@ -1,62 +1,63 @@
 name: inception
 services:
-    mariadb:
-        build:
-          context: requirements/mariadb
-          args:
-            DB_PASSWD: $DB_PASSWD
-        networks:
-            - net
-        user: mariadb
-        command:
-          - mysqld
-        volumes:
-          - db:/var/lib/mysql/wpdb
+  mariadb:
+    build:
+      context: requirements/mariadb
+      args:
+        DB_PASSWD: $DB_PASSWD
+    networks:
+      - net
+    user: mariadb
+    command:
+      - mysqld
+    volumes:
+      - db:/var/lib/mysql/wpdb
+
     nginx:
-        depends_on:
-            - wordpress
-            - mariadb
-        volumes:
-            - wordpress:/wordpress
-        hostname: lomeniga.42.fr
-        build: requirements/nginx
-        command:
-            - nginx
-            - -g
-            - daemon off;
-        networks:
-            - net
-        ports:
-            - 443:443
-        expose:
-          - 443
-        secrets:
-            - server.crt
-            - server.key
+      depends_on:
+        - wordpress
+        - mariadb
+      volumes:
+        - wordpress:/wordpress
+      hostname: lomeniga.42.fr
+      build: requirements/nginx
+      command:
+        - nginx
+        - -g
+        - daemon off;
+      networks:
+        - net
+      ports:
+        - 443:443
+      expose:
+        - 443
+      secrets:
+        - server.crt
+        - server.key
+
     wordpress:
-        environment:
-          WP_PWD:
-        depends_on:
-          - mariadb
+      environment:
+        WP_PWD:
+          depends_on:
+            - mariadb
         build:
           context: requirements/wordpress
           args:
             DB_PASSWD: ${DB_PASSWD}
             WP_PWD: ${WP_PWD}
         volumes:
-            - wordpress:/wordpress
+          - wordpress:/wordpress
         command:
           - php-fpm8
           - -F
         networks:
-            - net
+          - net
 
 networks:
-    net:
-
-volumes:
-    wordpress:
-      external: false
+  net:
+    volumes:
+      wordpress:
+        external: false
       driver_opts:
         type: none
         o: bind
@@ -69,11 +70,11 @@ volumes:
         device: /home/lomeniga/data/db
 
 secrets:
-    server.crt:
-        file: cert.pem
+  server.crt:
+    file: cert.pem
     server.key:
-        file: key.pem
+      file: key.pem
 
 configs:
-    nginx:
-        external: true
+  nginx:
+    external: true

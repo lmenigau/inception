@@ -10,6 +10,9 @@ up: srcs/.env srcs/cert.pem | $(DB) $(WORDP)
 down:
 	docker compose down -t1
 
+build:
+	docker compose build
+
 srcs/key.pem:
 	openssl genrsa -out srcs/key.pem 2048
 	chmod +r srcs/key.pem
