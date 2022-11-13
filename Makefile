@@ -7,8 +7,11 @@ WORDP=/home/lomeniga/data/wordp
 
 up: srcs/.env srcs/cert.pem | $(DB) $(WORDP)
 	docker compose up -d
+stop:
+	docker compose stop 
+
 down:
-	docker compose down -t1
+	docker compose down 
 
 build:
 	docker compose build
@@ -16,6 +19,7 @@ build:
 srcs/key.pem:
 	openssl genrsa -out srcs/key.pem 2048
 	chmod +r srcs/key.pem
+
 srcs/cert.pem: srcs/key.pem
 	openssl req -x509 -new -key srcs/key.pem -out srcs/cert.pem -days 365 -nodes -subj  '/CN=lomeniga.42.fr'
 
