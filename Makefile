@@ -8,8 +8,11 @@ WORDP=/home/lomeniga/data/wordp
 up: srcs/.env srcs/cert.pem | $(DB) $(WORDP)
 	docker compose up
 
-srcs/cert.pem:
-	openssl req -x509 -newkey rsa:4096 -keyout srcs/key.pem -out srcs/cert.pem -sha256 -days 365 -nodes -subj  '/CN=lomeniga.42.fr'
+srcs/key.pem:
+	openssl genrsa -out srcs/key.pem 2048
+	chmod +r srcs/key.pem
+srcs/cert.pem: srcs/key.pem
+	openssl req -x509 -new -key srcs/key.pem -out srcs/cert.pem -days 365 -nodes -subj  '/CN=lomeniga.42.fr'
 
 $(DB):
 	mkdir -p $(DB)
