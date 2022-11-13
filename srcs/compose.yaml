@@ -1,6 +1,7 @@
 name: inception
 services:
   mariadb:
+    restart: unless-stopped
     build:
       context: requirements/mariadb
       args:
@@ -14,6 +15,7 @@ services:
       - db:/var/lib/mysql
 
   nginx:
+    restart: unless-stopped
     depends_on:
       - wordpress
       - mariadb
@@ -36,6 +38,7 @@ services:
       - server.key
 
   wordpress:
+    restart: unless-stopped
     environment:
       WP_PWD:
     depends_on:
