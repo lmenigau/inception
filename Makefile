@@ -29,8 +29,13 @@ $(DB):
 $(WORDP):
 	mkdir -p $(WORDP)
 
+.ONESHELL:
 srcs/.env:
-	(echo DB_PASSWD=$(PWGEN); echo WP_PWD=$(PWGEN)) > srcs/.env
+	cat << EOF > srcs/.env
+	DB_PASSWD=$(PWGEN)
+	WP_PWD=$(PWGEN)
+	ROOT_PWD=$(PWGEN)
+	EOF
 
 wipe: down
 	rm -rf /home/lomeniga/data/*

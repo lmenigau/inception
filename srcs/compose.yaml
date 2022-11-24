@@ -6,6 +6,7 @@ services:
       context: requirements/mariadb
       args:
         DB_PASSWD: $DB_PASSWD
+        ROOT_PWD: $ROOT_PWD
     networks:
       - net
     user: mariadb

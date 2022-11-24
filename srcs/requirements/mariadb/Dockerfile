@@ -6,8 +6,10 @@ RUN adduser -D mariadb -G mysql
 RUN mysql_install_db --user=mariadb --datadir=/var/lib/mysql
 RUN mkdir /run/mysqld && chown mariadb /run/mysqld
 ARG DB_PASSWD
+ARG ROOT_PWD
 RUN <<DEOF mysqld --user=mariadb --datadir=/var/lib/mysql --bootstrap
 FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$ROOT_PWD';
 CREATE DATABASE wpdb;
 CREATE USER wp IDENTIFIED BY "$DB_PASSWD";
 GRANT ALL PRIVILEGES ON wpdb.* TO wp;
