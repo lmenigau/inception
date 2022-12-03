@@ -1,7 +1,8 @@
 export COMPOSE_PROJECT_NAME=inception
 export COMPOSE_FILE=srcs/compose.yaml
 PWGEN = $(shell mktemp -u XXXXXXXXXXXXXXXXXXXXXX)
-.PHONY: up re
+
+.PHONY: up re clean wipe build stop
 DB=/home/lomeniga/data/db
 WORDP=/home/lomeniga/data/wordp
 
@@ -37,8 +38,11 @@ srcs/.env:
 	ROOT_PWD=$(PWGEN)
 	EOF
 
-wipe: down
-	rm -rf /home/lomeniga/data/*
+wipe: clean
+	$(RM) -r $(DB) $(WORDP) srcs/.env
 
-re: clean
-	docker compose up
+clean: down
+	docker image prune -a -f
+	$(RM) srcs/*.pem
+
+re: clean up
